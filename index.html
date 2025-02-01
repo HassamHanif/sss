@@ -3,54 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Button</title>
+  <title>WhatsApp Number Checker</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f0f8ff;
-      margin: 0;
-      padding: 0;
-    }
-    h1 {
-      color: #333;
-      margin-top: 20px;
-    }
-    button {
-      padding: 15px 25px;
-      font-size: 18px;
-      color: #fff;
-      background-color: #007bff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    p {
-      font-size: 20px;
-      margin-top: 20px;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+    .result { margin-top: 20px; }
+    .result div { margin-bottom: 10px; }
   </style>
 </head>
 <body>
-  <h1>Welcome to My Interactive Page!</h1>
-  <button onclick="changeMessage()">Click Me</button>
-  <p id="message">Click the button to see something cool.</p>
+  <h1>WhatsApp Number Checker</h1>
+  <textarea id="phoneNumbers" placeholder="Enter phone numbers separated by comma"></textarea>
+  <button onclick="checkNumbers()">Check Numbers</button>
+
+  <div class="result">
+    <h2>Registered Numbers:</h2>
+    <div id="registered"></div>
+    <h2>Non-Registered Numbers:</h2>
+    <div id="nonRegistered"></div>
+  </div>
 
   <script>
-    function changeMessage() {
-      const messages = [
-        "You are awesome!",
-        "Have a great day!",
-        "Coding is fun!",
-        "HTML is cool!",
-        "Keep learning new things!"
-      ];
-      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-      document.getElementById('message').textContent = randomMessage;
+    async function checkNumbers() {
+      const numbers = document.getElementById('phoneNumbers').value.split(',').map(num => num.trim());
+      const response = await fetch('https://my-backend.zapto.org/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ numbers })
+      });
+      const result = await response.json();
+
+      document.getElementById('registered').innerText = result.registered.join(', ');
+      document.getElementById('nonRegistered').innerText = result.nonRegistered.join(', ');
     }
   </script>
 </body>
